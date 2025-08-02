@@ -1419,7 +1419,14 @@ async def process_rejection_reason(message: types.Message, state: FSMContext):
 
 
 # Payment system handlers - Text handler for card numbers
-@dp.message(F.text)
+def is_waiting_for_payment_card(message: types.Message) -> bool:
+    return (
+        message.from_user is not None and
+        user_states.get(message.from_user.id, {}).get('state') == 'waiting_for_payment_card_number'
+    )
+
+
+@dp.message(F.text, is_waiting_for_payment_card)
 async def handle_payment_card_number(message: types.Message, state: FSMContext):
     """Handle payment card numbers from users"""
     if not message.from_user or not message.text:
@@ -1427,66 +1434,64 @@ async def handle_payment_card_number(message: types.Message, state: FSMContext):
     
     user_id = message.from_user.id
     
-    # Check if user is sending payment card number
-    if user_id in user_states and user_states[user_id].get('state') == 'waiting_for_payment_card_number':
-        card_number = message.text.strip()
+    card_number = message.text.strip()
         
-        # Basic validation for card number (16 digits)
-        if not card_number.replace(' ', '').replace('-', '').isdigit():
-            await message.answer("❌ Невірний формат номера картки. Надішліть 16 цифр картки:")
-            return
-            
-        clean_card = card_number.replace(' ', '').replace('-', '')
-        if len(clean_card) != 16:
-            await message.answer("❌ Номер картки повинен містити 16 цифр. Спробуйте ще раз:")
-            return
-        
-        form_id = user_states[user_id]['form_id']
-        amount = user_states[user_id]['amount']
-        
-        # Save payment card number
-        save_payment_card_sync(form_id, card_number)
-        
-        # Clear user state
-        del user_states[user_id]
-        
-        # Notify user
-        await message.answer("✅ Номер картки отримано! Очікуйте підтвердження оплати від адміністратора.")
-        
-        # Notify admin with card number and payment amount
-        try:
-            form = get_form_by_id_sync(form_id)
-            username_display = f"@{form['username']}" if form['username'] else f"ID_{form['user_id']}"
-            
-            await bot.send_message(
-                ADMIN_ID,
-                f"💳 Номер картки для оплати анкети #{form_id}\n"
-                f"👤 Користувач: {username_display}\n"
-                f"🏦 Банк: {form['bank']}\n"
-                f"💰 Сума: {amount} грн\n"
-                f"💳 Картка: {card_number}\n\n"
-                f"Надішліть скріншот квитанції про оплату:")
-            
-            # Set admin state to waiting for receipt (using global context)
-            # Also store in user_states for backup
-            user_states[ADMIN_ID] = {
-                'state': 'waiting_for_payment_receipt',
-                'form_id': form_id,
-                'amount': amount
-            }
-            
-            await state.update_data(
-                waiting_receipt_form_id=form_id,
-                payment_amount=amount
-            )
-            await state.set_state(AdminStates.waiting_for_payment_receipt)
-            
-            logger.info(f"Admin state set for payment receipt. Form ID: {form_id}, Amount: {amount}")
-            
-        except Exception as e:
-            logger.error(f"Failed to notify admin about payment card: {e}")
-        
+    # Basic validation for card number (16 digits)
+    if not card_number.replace(' ', '').replace('-', '').isdigit():
+        await message.answer("❌ Невірний формат номера картки. Надішліть 16 цифр картки:")
         return
+        
+    clean_card = card_number.replace(' ', '').replace('-', '')
+    if len(clean_card) != 16:
+        await message.answer("❌ Номер картки повинен містити 16 цифр. Спробуйте ще раз:")
+        return
+    
+    form_id = user_states[user_id]['form_id']
+    amount = user_states[user_id]['amount']
+    
+    # Save payment card number
+    save_payment_card_sync(form_id, card_number)
+    
+    # Clear user state
+    del user_states[user_id]
+    
+    # Notify user
+    await message.answer("✅ Номер картки отримано! Очікуйте підтвердження оплати від адміністратора.")
+    
+    # Notify admin with card number and payment amount
+    try:
+        form = get_form_by_id_sync(form_id)
+        username_display = f"@{form['username']}" if form['username'] else f"ID_{form['user_id']}"
+        
+        await bot.send_message(
+            ADMIN_ID,
+            f"💳 Номер картки для оплати анкети #{form_id}\n"
+            f"👤 Користувач: {username_display}\n"
+            f"🏦 Банк: {form['bank']}\n"
+            f"💰 Сума: {amount} грн\n"
+            f"💳 Картка: {card_number}\n\n"
+            f"Надішліть скріншот квитанції про оплату:")
+        
+        # Set admin state to waiting for receipt (using global context)
+        # Also store in user_states for backup
+        user_states[ADMIN_ID] = {
+            'state': 'waiting_for_payment_receipt',
+            'form_id': form_id,
+            'amount': amount
+        }
+        
+        await state.update_data(
+            waiting_receipt_form_id=form_id,
+            payment_amount=amount
+        )
+        await state.set_state(AdminStates.waiting_for_payment_receipt)
+    
+        logger.info(f"Admin state set for payment receipt. Form ID: {form_id}, Amount: {amount}")
+        
+    except Exception as e:
+        logger.error(f"Failed to notify admin about payment card: {e}")
+    
+    return
 
 
 # Payment system handlers - Photo handler for admin receipts  
