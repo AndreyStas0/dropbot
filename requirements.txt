@@ -4,3 +4,4 @@ SQLAlchemy[asyncio]
 asyncpg
 psycopg2
 nest_asyncio
+dotenv
