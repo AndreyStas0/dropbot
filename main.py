@@ -350,20 +350,22 @@ async def show_form_example(message: types.Message):
         logger.error(f"Error sending example images: {e}")
         await message.answer("❌ Помилка завантаження прикладів фото")
 
-    with open("attached_assets/ukrsib/1.jpg", "rb") as photo:
-            media.append(types.InputMediaPhoto(
-                media=types.BufferedInputFile(photo.read(), filename="sib1.png"),
-                caption="""#Ukrsib
-Прізвище Ім'я по батькові
-Номер - 945000000
-Пошта - 00000000000@tronikmail.com
-Номер карти - 0000 0000 0000 0000
-Термін дії - 00/00
-СVV код - 000
-Пін код - 0000
-Пароль вхід у додаток -000000
-Треба щоб була активована карта та оновлені данні"""
-            ))
+    try:
+        media = []
+        with open("attached_assets/ukrsib/1.jpg", "rb") as photo:
+                media.append(types.InputMediaPhoto(
+                    media=types.BufferedInputFile(photo.read(), filename="sib1.png"),
+                    caption="""#Ukrsib
+    Прізвище Ім'я по батькові
+    Номер - 945000000
+    Пошта - 00000000000@tronikmail.com
+    Номер карти - 0000 0000 0000 0000
+    Термін дії - 00/00
+    СVV код - 000
+    Пін код - 0000
+    Пароль вхід у додаток -000000
+    Треба щоб була активована карта та оновлені данні"""
+                ))
         
         # Add passport/document screenshot
         with open("attached_assets/ukrsib/2.jpg", "rb") as photo:
