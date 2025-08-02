@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = "postgresql+asyncpg://neondb_owner:npg_KRCOcY3gMBF0@ep-wild-recipe-a22cuijo-pooler.eu-central-1.aws.neon.tech/dropbot"
 
 def get_sync_connection():
     """Get synchronous PostgreSQL connection"""
