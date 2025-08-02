@@ -1,6 +1,3 @@
-import os
-import json
-import datetime
 import logging
 import asyncio
 from aiogram import Bot, Dispatcher, types, F
@@ -16,7 +13,8 @@ from database import (
     get_form_by_id_sync, update_form_status_sync, get_pending_forms_count_sync,
     get_username_by_user_id_sync, get_user_telegram_info_sync,
     get_all_user_ids_sync, get_user_email_count_sync, update_payment_status_sync,
-    save_payment_card_sync, save_payment_receipt_sync, get_user_available_emails_limit)
+    save_payment_card_sync, save_payment_receipt_sync, get_user_available_emails_limit,
+    load_emails, save_emails, load_banks, save_banks)
 from config import BOT_TOKEN, ADMIN_IDS, CHAT_ID
 
 # Support multiple admins
@@ -39,9 +37,6 @@ users_ids = set()
 
 # Initialize PostgreSQL database
 # Database initialization will be done async in main()
-
-EMAILS_FILE = "emails.json"
-BANKS_FILE = "banks.json"
 
 
 class FormStates(StatesGroup):
@@ -78,59 +73,6 @@ class PaymentStates(StatesGroup):
     waiting_for_substatus = State()
     processing_form = State()
     waiting_for_banks_update = State()
-
-
-def load_emails():
-    """Load emails from JSON file"""
-    if not os.path.exists(EMAILS_FILE):
-        return {"available": [], "used": []}
-    try:
-        with open(EMAILS_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except (json.JSONDecodeError, FileNotFoundError):
-        return {"available": [], "used": []}
-
-
-def save_emails(data):
-    """Save emails to JSON file"""
-    with open(EMAILS_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-
-
-def load_banks():
-    """Load banks from JSON file"""
-    if not os.path.exists(BANKS_FILE):
-        # Default banks if file doesn't exist
-        default_banks = {
-            "ПУМБ": 150,
-            "Монобанк": 200,
-            "ПриватБанк": 180,
-            "RAIF": 170,
-            "IZIBank": 160,
-            "УкрСиб": 140
-        }
-        save_banks(default_banks)
-        return default_banks
-    try:
-        with open(BANKS_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except (json.JSONDecodeError, FileNotFoundError):
-        default_banks = {
-            "ПУМБ": 150,
-            "Монобанк": 200,
-            "ПриватБанк": 180,
-            "RAIF": 170,
-            "IZIBank": 160,
-            "УкрСиб": 140
-        }
-        save_banks(default_banks)
-        return default_banks
-
-
-def save_banks(data):
-    """Save banks to JSON file"""
-    with open(BANKS_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
 
 
 # PostgreSQL database functions are imported from database.py module

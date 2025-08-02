@@ -1,4 +1,5 @@
 import os
+import json
 import asyncio
 import asyncpg
 import psycopg2
@@ -63,6 +64,70 @@ async def init_database():
                 last_activity TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
+
+        # Emails table
+        await conn.execute("""
+            CREATE TABLE IF NOT EXISTS emails (
+                email TEXT PRIMARY KEY,
+                used BOOLEAN DEFAULT FALSE
+            )
+        """)
+
+        # Banks table
+        await conn.execute("""
+            CREATE TABLE IF NOT EXISTS banks (
+                bank TEXT PRIMARY KEY,
+                price INTEGER
+            )
+        """)
+
+        # Migrate data from JSON files if tables are empty
+        emails_count = await conn.fetchval("SELECT COUNT(*) FROM emails")
+        if emails_count == 0 and os.path.exists("emails.json"):
+            try:
+                with open("emails.json", "r", encoding="utf-8") as f:
+                    emails_data = json.load(f)
+                    for email in emails_data.get("available", []):
+                        await conn.execute(
+                            "INSERT INTO emails (email, used) VALUES ($1, FALSE)",
+                            email,
+                        )
+                    for email in emails_data.get("used", []):
+                        await conn.execute(
+                            "INSERT INTO emails (email, used) VALUES ($1, TRUE)",
+                            email,
+                        )
+            except (json.JSONDecodeError, FileNotFoundError):
+                pass
+
+        banks_count = await conn.fetchval("SELECT COUNT(*) FROM banks")
+        if banks_count == 0:
+            banks_file = "banks.json"
+            if os.path.exists(banks_file):
+                try:
+                    with open(banks_file, "r", encoding="utf-8") as f:
+                        banks_data = json.load(f)
+                except (json.JSONDecodeError, FileNotFoundError):
+                    banks_data = {}
+            else:
+                banks_data = {}
+
+            if not banks_data:
+                banks_data = {
+                    "ПУМБ": 150,
+                    "Монобанк": 200,
+                    "ПриватБанк": 180,
+                    "RAIF": 170,
+                    "IZIBank": 160,
+                    "УкрСиб": 140,
+                }
+
+            for bank, price in banks_data.items():
+                await conn.execute(
+                    "INSERT INTO banks (bank, price) VALUES ($1, $2)",
+                    bank,
+                    price,
+                )
         
         print("Database tables initialized successfully")
     finally:
@@ -429,5 +494,80 @@ def get_user_telegram_info_sync(user_id):
     except Exception as e:
         print(f"Error in get_user_telegram_info_sync: {e}")
         return f"ID_{user_id}"
+    finally:
+        conn.close()
+
+
+def load_emails():
+    """Load emails from database"""
+    conn = get_sync_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT email, used FROM emails")
+        rows = cursor.fetchall()
+        available = []
+        used = []
+        for row in rows:
+            email = row[0] if isinstance(row, (tuple, list)) else row.get("email")
+            is_used = row[1] if isinstance(row, (tuple, list)) else row.get("used")
+            if is_used:
+                used.append(email)
+            else:
+                available.append(email)
+        return {"available": available, "used": used}
+    finally:
+        conn.close()
+
+
+def save_emails(data):
+    """Save emails to database"""
+    conn = get_sync_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM emails")
+        for email in data.get("available", []):
+            cursor.execute(
+                "INSERT INTO emails (email, used) VALUES (%s, FALSE)",
+                (email,),
+            )
+        for email in data.get("used", []):
+            cursor.execute(
+                "INSERT INTO emails (email, used) VALUES (%s, TRUE)",
+                (email,),
+            )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def load_banks():
+    """Load banks from database"""
+    conn = get_sync_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT bank, price FROM banks")
+        rows = cursor.fetchall()
+        banks = {}
+        for row in rows:
+            bank = row[0] if isinstance(row, (tuple, list)) else row.get("bank")
+            price = row[1] if isinstance(row, (tuple, list)) else row.get("price")
+            banks[bank] = price
+        return banks
+    finally:
+        conn.close()
+
+
+def save_banks(data):
+    """Save banks to database"""
+    conn = get_sync_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM banks")
+        for bank, price in data.items():
+            cursor.execute(
+                "INSERT INTO banks (bank, price) VALUES (%s, %s)",
+                (bank, price),
+            )
+        conn.commit()
     finally:
         conn.close()
