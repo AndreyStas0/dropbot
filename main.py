@@ -254,6 +254,74 @@ async def show_form_example(message: types.Message):
         with open("attached_assets/image_1753095314727.png", "rb") as photo:
             media.append(types.InputMediaPhoto(
                 media=types.BufferedInputFile(photo.read(), filename="enforcement_example.png"),
+                caption="""#TAS2U 18+
+Прізвище Ім'я по батькові
+Номер - 945000000
+Пошта - 00000000000@tronikmail.com
+Номер карти - 0000 0000 0000 0000
+Термін дії - 00/00
+ СVV код - 000
+Пін код - 0000
+Пароль обов'язково має бути: Qwerty123@"""
+            ))
+        
+        # Add passport/document screenshot
+        with open("attached_assets/1.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="tas1.png")
+            ))
+            
+        # Add app store screenshot
+        with open("attached_assets/2.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="tas2.png")
+            ))
+            
+        # Add bank app menu screenshot
+        with open("attached_assets/3.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="tas3.png")
+            ))
+            
+        # Add ID document screenshot
+        with open("attached_assets/4.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="tas4.png")
+            ))
+            
+        with open("attached_assets/5.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="tas5.png")
+            ))
+
+        with open("attached_assets/6.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="tas6.png")
+            ))
+
+        with open("attached_assets/7.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="tas7.png")
+            ))
+
+        with open("attached_assets/8.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="tas8.png")
+            ))
+        
+        await bot.send_media_group(chat_id=message.chat.id, media=media)
+        
+    except Exception as e:
+        logger.error(f"Error sending example images: {e}")
+        await message.answer("❌ Помилка завантаження прикладів фото")
+
+    try:
+        media = []
+        
+        # Add enforcement check screenshot
+        with open("attached_assets/image_1753095314727.png", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="enforcement_example.png"),
                 caption="📋 Приклади необхідних скріншотів для анкети"
             ))
         
