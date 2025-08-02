@@ -510,7 +510,7 @@ async def show_form_example(message: types.Message):
         logger.error(f"Error sending example images: {e}")
         await message.answer("❌ Помилка завантаження прикладів фото")
 
-        try:
+    try:
         media = []
         with open("attached_assets/pumb/1.jpg", "rb") as photo:
                 media.append(types.InputMediaPhoto(
