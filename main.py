@@ -9,7 +9,6 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.filters import Command
-from dotenv import load_dotenv
 from database import (
     init_database, save_form_data, get_user_forms_count_sync,
     update_user_stats_sync, get_database_stats_sync, get_all_forms_sync,
@@ -18,15 +17,10 @@ from database import (
     get_username_by_user_id_sync, get_user_telegram_info_sync,
     get_all_user_ids_sync, get_user_email_count_sync, update_payment_status_sync,
     save_payment_card_sync, save_payment_receipt_sync, get_user_available_emails_limit)
+from config import BOT_TOKEN, ADMIN_IDS, CHAT_ID
 
-# Load environment variables
-load_dotenv()
-BOT_TOKEN = os.getenv("BOT_TOKEN",
-                      "7668525938:AAGyP8iGbtiYSl3ffWDn3QO5jy4Ev_8NPCo")
 # Support multiple admins
-ADMIN_IDS = list(map(int, os.getenv("ADMIN_IDS", "6995773690").split(",")))
 ADMIN_ID = ADMIN_IDS[0] if ADMIN_IDS else 6995773690  # Backward compatibility
-CHAT_ID = int(os.getenv("CHAT_ID", "6995773690"))
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
