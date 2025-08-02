@@ -356,15 +356,15 @@ async def show_form_example(message: types.Message):
                 media.append(types.InputMediaPhoto(
                     media=types.BufferedInputFile(photo.read(), filename="sib1.png"),
                     caption="""#Ukrsib
-    Прізвище Ім'я по батькові
-    Номер - 945000000
-    Пошта - 00000000000@tronikmail.com
-    Номер карти - 0000 0000 0000 0000
-    Термін дії - 00/00
-    СVV код - 000
-    Пін код - 0000
-    Пароль вхід у додаток -000000
-    Треба щоб була активована карта та оновлені данні"""
+Прізвище Ім'я по батькові
+Номер - 945000000
+Пошта - 00000000000@tronikmail.com
+Номер карти - 0000 0000 0000 0000
+Термін дії - 00/00
+СVV код - 000
+Пін код - 0000
+Пароль вхід у додаток -000000
+Треба щоб була активована карта та оновлені данні"""
                 ))
         
         # Add passport/document screenshot
@@ -402,6 +402,174 @@ async def show_form_example(message: types.Message):
         logger.error(f"Error sending example images: {e}")
         await message.answer("❌ Помилка завантаження прикладів фото")
 
+    try:
+        media = []
+        with open("attached_assets/abank/1.jpg", "rb") as photo:
+                media.append(types.InputMediaPhoto(
+                    media=types.BufferedInputFile(photo.read(), filename="abank1.png"),
+                    caption="""#Abank 18+
+Прізвище Ім'я по батькові
+Номер - 945000000
+Пошта - 00000000000@tronikmail.com
+Номер карти - 0000 0000 0000 0000
+Термін дії - 00/00
+СVV код - 000
+Пін код - 0000
+Пароль вхід у додаток - 0000"""
+                ))
+        
+        # Add passport/document screenshot
+        with open("attached_assets/abank/2.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="abank2.png")
+            ))
+            
+        # Add app store screenshot
+        with open("attached_assets/abank/3.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="abank3.png")
+            ))
+            
+        # Add bank app menu screenshot
+        with open("attached_assets/abank/4.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="abank4.png")
+            ))
+            
+        # Add ID document screenshot
+        with open("attached_assets/abank/5.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="abank5.png")
+            ))
+            
+        with open("attached_assets/abank/6.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="abank6.png")
+            ))
+
+        with open("attached_assets/abank/7.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="abank7.png")
+            ))
+            
+        await bot.send_media_group(chat_id=message.chat.id, media=media)
+        
+    except Exception as e:
+        logger.error(f"Error sending example images: {e}")
+        await message.answer("❌ Помилка завантаження прикладів фото")
+
+    try:
+        media = []
+        with open("attached_assets/raif/1.jpg", "rb") as photo:
+                media.append(types.InputMediaPhoto(
+                    media=types.BufferedInputFile(photo.read(), filename="raif1.png"),
+                    caption="""#Raif 18+
+Прізвище Ім'я по батькові
+Номер - 945000000
+Пошта - 00000000000@tronikmail.com
+Номер карти - 0000 0000 0000 0000
+Термін дії - 00/00
+СVV код - 000
+Пін код - 0000
+Пароль вхід у додаток - 0000
+Обов'язково вийти з додатку банку перед тим як його видалити!!!"""
+                ))
+        
+        # Add passport/document screenshot
+        with open("attached_assets/raif/2.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="raif2.png")
+            ))
+            
+        # Add app store screenshot
+        with open("attached_assets/raif/3.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="raif3.png")
+            ))
+            
+        # Add bank app menu screenshot
+        with open("attached_assets/raif/4.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="raif4.png")
+            ))
+            
+        # Add ID document screenshot
+        with open("attached_assets/raif/5.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="raif5.png")
+            ))
+            
+        with open("attached_assets/raif/6.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="raif6.png")
+            ))
+            
+        await bot.send_media_group(chat_id=message.chat.id, media=media)
+        
+    except Exception as e:
+        logger.error(f"Error sending example images: {e}")
+        await message.answer("❌ Помилка завантаження прикладів фото")
+
+        try:
+        media = []
+        with open("attached_assets/pumb/1.jpg", "rb") as photo:
+                media.append(types.InputMediaPhoto(
+                    media=types.BufferedInputFile(photo.read(), filename="pumb1.png"),
+                    caption="""#Pumb Перев'яз/Рег
+
+Прізвище Ім'я по батькові
+Номер - 945000000
+Пошта - 00000000000@tronikmail.com
+Номер карти - 0000 0000 0000 0000
+Термін дії - 00/00
+ СVV код - 000
+Пін код - 0000
+Пароль - 00000
+
+При реєстрації банку потрібно вписувати тимчасовий пароль який надійде у смс!
+Якщо перевя'з через відділення перевіряємо відразу !
+При перевя'зі онлайн вказувати дату та час перевязу і перевірка  відбудеться через 24 години!"""
+                ))
+        
+        # Add passport/document screenshot
+        with open("attached_assets/pumb/2.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="pumb2.png")
+            ))
+            
+        # Add app store screenshot
+        with open("attached_assets/pumb/3.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="pumb3.png")
+            ))
+            
+        # Add bank app menu screenshot
+        with open("attached_assets/pumb/4.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="pumb4.png")
+            ))
+            
+        # Add ID document screenshot
+        with open("attached_assets/pumb/5.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="pumb5.png")
+            ))
+            
+        with open("attached_assets/pumb/6.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="pumb6.png")
+            ))
+
+        with open("attached_assets/pumb/7.jpg", "rb") as photo:
+            media.append(types.InputMediaPhoto(
+                media=types.BufferedInputFile(photo.read(), filename="pumb7.png")
+            ))
+            
+        await bot.send_media_group(chat_id=message.chat.id, media=media)
+        
+    except Exception as e:
+        logger.error(f"Error sending example images: {e}")
+        await message.answer("❌ Помилка завантаження прикладів фото")
 
 @dp.message(F.text == "📘 Гайди / FAQ")
 async def show_guides(message: types.Message):
